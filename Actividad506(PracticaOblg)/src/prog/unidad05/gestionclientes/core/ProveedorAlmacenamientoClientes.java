@@ -16,10 +16,5 @@ public interface ProveedorAlmacenamientoClientes {
    * @throws ProveedorAlmacenamientoClientesException Si ocurre algún error accediendo al almacenamiento
    */
   public void saveAll(Cliente[] clientes) throws NullPointerException, ProveedorAlmacenamientoClientesException;
-  
-  
-  
-  
      
-
 }

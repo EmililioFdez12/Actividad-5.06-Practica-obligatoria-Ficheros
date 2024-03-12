@@ -128,7 +128,7 @@ class ClientesTest {
     
     assertDoesNotThrow(() -> clientes.addCliente(cliente));
     assertDoesNotThrow(() -> clientes.updateCliente(cliente2));
-    // Sólo hay un cliente en elmacnaminamiento
+    // Sólo hay un cliente en el almacenaminamiento
     assertEquals(1, proveedor.size());
     // Y es el segundo, no el primero
     assertTrue(proveedor.contains(cliente2));

@@ -1,16 +1,10 @@
 package prog.unidad05.gestionclientes.impl;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import prog.unidad05.gestionclientes.core.Cliente;
-import prog.unidad05.gestionclientes.core.Clientes;
 import prog.unidad05.gestionclientes.core.ProveedorAlmacenamientoClientes;
 import prog.unidad05.gestionclientes.core.ProveedorAlmacenamientoClientesException;
 
@@ -21,7 +15,7 @@ import prog.unidad05.gestionclientes.core.ProveedorAlmacenamientoClientesExcepti
  */
 public class ProveedorAlmacenamientoClientesFichero implements ProveedorAlmacenamientoClientes {
 
-  private static final String RUTA_FICHERO = "clientes.dat";
+  private Set<Cliente> clientes;
 
   /**
    * Constructor con ruta
@@ -31,28 +25,25 @@ public class ProveedorAlmacenamientoClientesFichero implements ProveedorAlmacena
    * @throws NullPointerException Si la ruta no es nula
    */
   public ProveedorAlmacenamientoClientesFichero(String rutaFichero) {
-    generaArchivo(RUTA_FICHERO);
+    this.clientes = new HashSet<>();
+  }
+  
+  public boolean contains(Cliente cliente){
+  	return clientes.contains(cliente);
+  }
+  
+  public int size() {
+  	return clientes.size();
   }
 
   @Override
   public Cliente[] getAll() throws ProveedorAlmacenamientoClientesException {
-    return null;
+    return clientes.toArray(new Cliente[0]);
   }
 
   @Override
   public void saveAll(Cliente[] clientes) throws NullPointerException, ProveedorAlmacenamientoClientesException {
-    // TODO Auto-generated method stub
+  	this.clientes = Set.of(clientes);
   }
-
-  // Genera un archivo vacio
-  private void generaArchivo(String rutaFichero) {
-    try (PrintWriter flujoSalida = new PrintWriter(new FileWriter(rutaFichero))) {
-
-    } catch (IOException e) {
-      System.out.println("No se ha podido crear el archivo.");
-      e.printStackTrace();
-    }
-  }
-  
  
 }
