@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="actividad506_core_pruebas/test"/>
+	<classpathentry kind="src" path="Actividad506(PracticaOblg)/src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
