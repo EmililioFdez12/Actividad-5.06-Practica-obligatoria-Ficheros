@@ -7,6 +7,7 @@ public class Clientes {
 
 	private ProveedorAlmacenamientoClientes proveedorAlmacenamiento;
 	private List<Cliente> listaClientes;
+	private Cliente[] arrayClientes;
 	
 	public Clientes(ProveedorAlmacenamientoClientes proveedorAlmacenamiento) {
 		if (proveedorAlmacenamiento != null) {
@@ -14,12 +15,6 @@ public class Clientes {
 			this.listaClientes = new ArrayList<>();
 		} else {
 			throw new NullPointerException();
-		}
-		
-		try {
-			proveedorAlmacenamiento.getAll();
-		} catch (ProveedorAlmacenamientoClientesException e) {
-			
 		}
 	}
 

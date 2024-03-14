@@ -24,73 +24,74 @@ import prog.unidad05.gestionclientes.core.ClientesException;
  */
 public class ProveedorAlmacenamientoClientesFichero implements ProveedorAlmacenamientoClientes {
 
-	private String rutaFichero = "clientes.dat";
-	private Set<Cliente> clientes;
+  private String rutaFichero = "clientes.dat";
+  
+  /**
+   * Constructor con ruta
+   * 
+   * @param rutaFichero Ruta al fichero a emplear para leer y almacenar los
+   *                    clientes
+   * @throws NullPointerException Si la ruta no es nula
+   */
+  public ProveedorAlmacenamientoClientesFichero(String rutaFichero) {
+    this.rutaFichero = rutaFichero;
+  }
 
-	/**
-	 * Constructor con ruta
-	 * 
-	 * @param rutaFichero Ruta al fichero a emplear para leer y almacenar los
-	 *                    clientes
-	 * @throws NullPointerException Si la ruta no es nula
-	 */
-	public ProveedorAlmacenamientoClientesFichero(String rutaFichero) {
-		this.rutaFichero = rutaFichero;
-		this.clientes = new HashSet<>();
-	}
 
-	public boolean contains(Cliente cliente) {
-		return clientes.contains(cliente);
-	}
+  @Override
+  public Cliente[] getAll() throws ProveedorAlmacenamientoClientesException {
+    List<Cliente> listaClientes = new ArrayList<>();
+    String linea = null;
+    try (BufferedReader flujoEntrada = new BufferedReader(new FileReader(rutaFichero))) {
+      while ((linea = flujoEntrada.readLine()) != null) {
+        String[] datosCliente = linea.split("\\|");
+        Cliente cliente = new Cliente(datosCliente[0], datosCliente[1], datosCliente[2],
+            Integer.parseInt(datosCliente[3]), Double.parseDouble(datosCliente[4]),
+            Boolean.parseBoolean(datosCliente[5]));
+        listaClientes.add(cliente);
+      }
+    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
+      System.out.println("No se puede leer el archivo");
+    }
+    return listaClientes.toArray(new Cliente[0]);
+  }
 
-	public int size() {
-		return clientes.size();
-	}
-
-	@Override
-	public Cliente[] getAll() throws ProveedorAlmacenamientoClientesException {
-		List<String> listaLineas = new ArrayList<>();
-		try (BufferedReader flujoEntrada = new BufferedReader(new FileReader(rutaFichero))) {
-			String linea = null;
-			do {
-				linea = flujoEntrada.readLine();
-				listaLineas.add(linea);
-			} while (linea != null);
-
-		} catch (FileNotFoundException e) {
-			System.out.println("No se ha encontrado el fichero");
-		} catch (IOException e) {
-			System.out.println("No se puede leer el archivo");
-		}
-		return clientes.toArray(new Cliente[0]);
-	}
-
-	@Override
-	public void saveAll(Cliente[] clientes) throws NullPointerException, ProveedorAlmacenamientoClientesException {
-		try (PrintWriter flujoSalida = new PrintWriter(new FileWriter(rutaFichero))) {    
-          for (Cliente cliente: clientes) {
-						flujoSalida.println(cliente.toString());
-					}           
+  @Override
+  public void saveAll(Cliente[] clientes) throws NullPointerException, ProveedorAlmacenamientoClientesException {
+    try (PrintWriter flujoSalida = new PrintWriter(new FileWriter(rutaFichero, false))) {
+      for (Cliente cliente : clientes) {
+        flujoSalida.printf("%s|%s|%s|%s|%s|%s%n", cliente.getNif(), cliente.getApellidos(), cliente.getNombre(),
+            cliente.getEmpleados(), cliente.getFacturacion(), cliente.isNacionalUe());
+      }
     } catch (IOException e) {
       System.out.println("No se ha podido crear el archivo.");
       e.printStackTrace();
     }
-		this.clientes = Set.of(clientes);
-	}
+  }
 
-	public static void main(String[] args)
-			throws ProveedorAlmacenamientoClientesException, NullPointerException, ClientesException {
-		Cliente cliente = new Cliente("77687485V", "Pepin", "Rodriguez", 20, 25.5, false);
-		Cliente cliente2 = new Cliente("67071237V", "Lolito", "Fernandez", 500, 100000, true);
-		String ruta = "clientes.dat";
+    public static void main(String[] args) throws ProveedorAlmacenamientoClientesException, NullPointerException, ClientesException {
+      Cliente cliente = new Cliente("77687485V", "Rodriguez", "Pepin", 20, 25.5, false);
+      Cliente cliente2 = new Cliente("67071237V", "Fernandez", "Lolito", 500, 100000, true);
+      Cliente cliente3 = new Cliente("76750075H", "Julian", "Lolito", 500, 100000, true);
+      String ruta = "clientes.dat";
 
-		ProveedorAlmacenamientoClientesFichero proveedor = new ProveedorAlmacenamientoClientesFichero(ruta);
-		Clientes clientes = new Clientes(proveedor);
-		clientes.addCliente(cliente);
-		clientes.addCliente(cliente2);
-		
-		Cliente[] arrayCliente = proveedor.getAll();
-		proveedor.saveAll(arrayCliente);
-	}
+      ProveedorAlmacenamientoClientesFichero proveedor = new ProveedorAlmacenamientoClientesFichero(ruta);
+      Clientes clientes = new Clientes(proveedor);
+      clientes.addCliente(cliente);
+      clientes.addCliente(cliente2);
+
+      // Obtener la lista de clientes actualizada después de agregar cliente3
+      Cliente[] arrayCliente = proveedor.getAll();
+
+      clientes.addCliente(cliente3);
+      
+      // Obtener la lista de clientes actualizada después de agregar cliente3
+      arrayCliente = proveedor.getAll();
+
+      // Guardar la lista actualizada de clientes
+      proveedor.saveAll(arrayCliente);
+
+  }
 
 }
