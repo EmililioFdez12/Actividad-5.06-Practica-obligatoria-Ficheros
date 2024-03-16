@@ -24,66 +24,60 @@ import prog.unidad05.gestionclientes.core.ProveedorAlmacenamientoClientesExcepti
  * vez que se guarde y devuelve una colección vacía de clientes al leer.
  */
 public class ProveedorAlmacenamientoClientesFichero implements ProveedorAlmacenamientoClientes {
+	// Ruta del archivo
+	private String rutaFichero = "clientes.dat";
+	private List<Cliente> listaClientes;
 
-  private String rutaFichero = "clientes.dat";
-  private List<Cliente> listaClientes;
+	/**
+	 * Constructor con ruta
+	 * 
+	 * @param rutaFichero Ruta al fichero a emplear para leer y almacenar los
+	 *                    clientes
+	 * @throws NullPointerException Si la ruta no es nula
+	 */
+	public ProveedorAlmacenamientoClientesFichero(String rutaFichero) {
+		this.rutaFichero = rutaFichero;
+		this.listaClientes = new ArrayList<>();
+	}
 
-  /**
-   * Constructor con ruta
-   * 
-   * @param rutaFichero Ruta al fichero a emplear para leer y almacenar los
-   *                    clientes
-   * @throws NullPointerException Si la ruta no es nula
-   */
-  public ProveedorAlmacenamientoClientesFichero(String rutaFichero) {
-    this.rutaFichero = rutaFichero;
-    this.listaClientes = cargarClientesDesdeArchivo();
-  }
+		
+	
+	@Override
+	public Cliente[] getAll() throws ProveedorAlmacenamientoClientesException {
+		String linea = null;
+		try (BufferedReader flujoEntrada = new BufferedReader(new FileReader(rutaFichero))) {
+			while ((linea = flujoEntrada.readLine()) != null) {
+				String[] datosCliente = linea.split("\\|");
+				if (datosCliente.length == 6) { // Verificar que hay suficientes datos en la línea
+					Cliente cliente = new Cliente(datosCliente[0], datosCliente[1], datosCliente[2],
+							Integer.parseInt(datosCliente[3]), Double.parseDouble(datosCliente[4]),
+							Boolean.parseBoolean(datosCliente[5]));
+					listaClientes.add(cliente);
+				} else {
+					// Manejar la línea que no cumple con el formato esperado
+					System.out.println("La línea del archivo no cumple con el formato esperado: " + linea);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			
+			System.out.println("El archivo no existe. Se ha creado uno vacío");
+		} catch (IOException e) {
+			System.out.println("Error de entrada/salida.");
+		}
+		return listaClientes.toArray(new Cliente[0]);
+	}
+	
 
-  private List<Cliente> cargarClientesDesdeArchivo() {
-    List<Cliente> clientes = new ArrayList<>();
-    String linea = null;
-    try (BufferedReader flujoEntrada = new BufferedReader(new FileReader(rutaFichero))) {
-      while ((linea = flujoEntrada.readLine()) != null) {
-        String[] datosCliente = linea.split("\\|");
-        if (datosCliente.length == 6) { // Verificar que hay suficientes datos en la línea
-          Cliente cliente = new Cliente(datosCliente[0], datosCliente[1], datosCliente[2],
-              Integer.parseInt(datosCliente[3]), Double.parseDouble(datosCliente[4]),
-              Boolean.parseBoolean(datosCliente[5]));
-          clientes.add(cliente);
-        } else {
-          // Manejar la línea que no cumple con el formato esperado
-          System.out.println("La línea del archivo no cumple con el formato esperado: " + linea);
-        }
-      }
-    } catch (FileNotFoundException e) {
-      // Manejar la excepción correctamente
-      System.out.println("El archivo no existe.");
-    } catch (IOException e) {
-      // Manejar la excepción correctamente
-      System.out.println("Error de entrada/salida.");
-    }
-    return clientes;
-  }
-
-  @Override
-  public Cliente[] getAll() throws ProveedorAlmacenamientoClientesException {
-    return listaClientes.toArray(new Cliente[0]);
-  }
-
-  @Override
-  public void saveAll(Cliente[] clientes) throws ProveedorAlmacenamientoClientesException {
-    try (PrintWriter flujoSalida = new PrintWriter(new FileWriter(rutaFichero, false))) {
-      for (Cliente cliente : clientes) {
-        flujoSalida.printf("%s|%s|%s|%s|%s|%s%n", cliente.getNif(), cliente.getApellidos(), cliente.getNombre(),
-            cliente.getEmpleados(), cliente.getFacturacion(), cliente.isNacionalUe());
-        if (!listaClientes.contains(cliente)) {
-          listaClientes.add(cliente);
-        }
-      }
-    } catch (IOException e) {
-      System.out.println("No se ha podido crear el archivo.");
-      throw new ProveedorAlmacenamientoClientesException();
-    }
-  }
+	@Override
+	public void saveAll(Cliente[] clientes) throws ProveedorAlmacenamientoClientesException {
+		try (PrintWriter flujoSalida = new PrintWriter(new FileWriter(rutaFichero, false))) {
+			for (Cliente clienteATexto : clientes) {
+				flujoSalida.printf("%s|%s|%s|%s|%s|%s%n", clienteATexto.getNif(), clienteATexto.getApellidos(), clienteATexto.getNombre(),
+						clienteATexto.getEmpleados(), clienteATexto.getFacturacion(), clienteATexto.isNacionalUe());
+			}
+		} catch (IOException e) {
+			System.out.println("No se ha podido crear el archivo.");
+			throw new ProveedorAlmacenamientoClientesException();
+		}
+	}
 }

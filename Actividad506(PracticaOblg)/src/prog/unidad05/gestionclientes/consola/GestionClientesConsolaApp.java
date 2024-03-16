@@ -1,7 +1,5 @@
 package prog.unidad05.gestionclientes.consola;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import prog.unidad05.gestionclientes.core.Cliente;
@@ -31,7 +29,6 @@ public class GestionClientesConsolaApp {
   private Scanner sc;
   private ProveedorAlmacenamientoClientesFichero proveedorClientes;
   private Clientes clientes;
-  private List<Cliente> listadoClientes;
   private Cliente[] arrayClientes;
 
   public static void main(String[] args) {
@@ -45,7 +42,6 @@ public class GestionClientesConsolaApp {
     sc = new Scanner(System.in);
     proveedorClientes = new ProveedorAlmacenamientoClientesFichero(ARCHIVO);
     clientes = new Clientes(proveedorClientes);
-    listadoClientes = new ArrayList<>();
   }
 
   private void run() {
@@ -149,6 +145,7 @@ public class GestionClientesConsolaApp {
     Cliente cliente = new Cliente(nifCliente, apellidoCliente, nombreCliente, empleadosCliente, facturacionCliente,
         esNacional);
     try {
+    	arrayClientes = proveedorClientes.getAll();
       clientes.addCliente(cliente);
     } catch (NullPointerException | ClientesException | ProveedorAlmacenamientoClientesException e) {
     }
