@@ -1,16 +1,23 @@
 package prog.unidad05.gestionclientes.core;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 public class Clientes {
-
+	// Proveedor de almacenamiento de clientes
 	private ProveedorAlmacenamientoClientes proveedorAlmacenamiento;
-	private List<Cliente> listaClientes;
-	private Cliente[] arrayClientes;
-	boolean clienteEncontrado;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param proveedorAlmacenamiento Proveedor de almacenamiento a emplear para
+	 *                                leer y escribir los clientes desde o hacia
+	 *                                almacenamiento secundario
+	 * @throws NullPointerException Si cliente es null
+	 * @throws ClientesException    Si ya hay un cliente con el mismo NIF o hay
+	 *                              problemas con el almacenamiento
+	 */
 	public Clientes(ProveedorAlmacenamientoClientes proveedorAlmacenamiento) {
 		if (proveedorAlmacenamiento != null) {
 			this.proveedorAlmacenamiento = proveedorAlmacenamiento;
@@ -19,117 +26,170 @@ public class Clientes {
 		}
 	}
 
-	public void addCliente(Cliente cliente)
-			throws ClientesException, NullPointerException, ProveedorAlmacenamientoClientesException {
+	/**
+	 * Añade un nuevo cliente. El cliente se almacena en almacenamiento secundario
+	 * inmediatamente
+	 * 
+	 * @param cliente Nuevo cliente a añadir. No puede ser null ni su NIF coincidir
+	 *                con el NIF de un cliente ya almacenado
+	 * @throws ClientesException    Si ya hay un cliente con el mismo NIF o hay
+	 *                              problemas con el almacenamiento
+	 * @throws NullPointerException Si cliente es null
+	 */
+	public void addCliente(Cliente cliente) throws ClientesException, NullPointerException {
 		if (cliente == null) {
-			throw new NullPointerException("El cliente proporcionado es nulo.");
+			throw new NullPointerException();
 		}
 
-		// Verificar si la lista está vacía
-		if (listaClientes.isEmpty()) {
-			listaClientes.add(cliente);
-		} else {
-			// Verificar si el cliente ya existe en la lista
-			boolean clienteExistente = false;
-			for (Cliente c : listaClientes) {
-				if (c.getNif().equals(cliente.getNif())) {
-					clienteExistente = true;
-					break;
+		try {
+			// Creamos un array con los clientes actuales
+			Cliente[] arrayClientes = proveedorAlmacenamiento.getAll();
+			// Pasamos el array a lista
+			List<Cliente> listaClientes = new ArrayList<>(Arrays.asList(arrayClientes));
+			// Si y hay un cliente con el mismo nif salta ClientesException(No puede haber
+			// dos clientes con el mismo nif)
+			for (int i = 0; i < listaClientes.size(); i++) {
+				if (cliente.getNif().trim().equalsIgnoreCase(arrayClientes[i].getNif())) {
+					throw new ClientesException();
 				}
 			}
-
-			// Si el cliente no existe, agregarlo a la lista
-			if (!clienteExistente) {
-				listaClientes.add(cliente);
-			} else {
-				throw new ClientesException();
-			}
+			// Añadimos el cliente a la lista
+			listaClientes.add(cliente);
+			// Pasamos la lista a array
+			arrayClientes = listaClientes.toArray(new Cliente[0]);
+			// Guardamos los clientes(con el nuevo cliente)
+			proveedorAlmacenamiento.saveAll(arrayClientes);
+		} catch (ProveedorAlmacenamientoClientesException e) {
 		}
-
-		// Guardar la lista actualizada en el proveedor de almacenamiento
-		Cliente[] arrayClientes = listaClientes.toArray(new Cliente[0]);
-		proveedorAlmacenamiento.saveAll(arrayClientes);
 	}
 
+	/**
+	 * Actualiza un cliente ya existente. El cliente se actualiza inmediatamente en
+	 * el almacenamiento secundario
+	 * 
+	 * @param cliente Cliente a almacenar. No puede ser null y su NIF debe coincidir
+	 *                con el de algún cliente ya almacenado.
+	 * @throws ClientesException    Si no existe en el almacén ningún cliente con el
+	 *                              mismo NIF que el cliente proporcionado o no se
+	 *                              puede almacenar en almacenamiento secundario
+	 * @throws NullPointerException Si cliente es null
+	 */
 	public void updateCliente(Cliente cliente)
 			throws ClientesException, NullPointerException, ProveedorAlmacenamientoClientesException {
 		if (cliente == null) {
 			throw new NullPointerException();
 		}
 
-		// Recargar la lista de clientes desde el proveedor de almacenamiento
-		listaClientes = new ArrayList<>(Arrays.asList(proveedorAlmacenamiento.getAll()));
-
-		boolean clienteEncontrado = false;
-		for (int i = 0; i < listaClientes.size(); i++) {
-			// Si el NIF del cliente de la lista coincide exactamente con el NIF del cliente
-			// que hemos pasado
-			if (listaClientes.get(i).getNif().equals(cliente.getNif())) {
-				clienteEncontrado = true;
-				// Actualizamos el cliente en la lista
-				listaClientes.set(i, cliente);
+		// Comprobamos si el cliente existe, si no se lanza Excepcion
+		boolean nifExiste = false;
+		Cliente[] arrayCliente = proveedorAlmacenamiento.getAll();
+		for (Cliente cliente2 : arrayCliente) {
+			if (cliente2.getNif().trim().equalsIgnoreCase(cliente.getNif().trim())) {
+				nifExiste = true;
 			}
 		}
 
-		if (!clienteEncontrado) {
-			// Si no se encuentra el cliente en la lista, lanzamos una excepción
+		// Si existe
+		if (nifExiste) {
+			// Actualizamos el cliente en la lista
+			for (int i = 0; i < arrayCliente.length; i++) {
+				if (arrayCliente[i].getNif().trim().equalsIgnoreCase(cliente.getNif().trim())) {
+					arrayCliente[i] = cliente;
+					proveedorAlmacenamiento.saveAll(arrayCliente);
+				}
+			}
+		} else {
 			throw new ClientesException();
 		}
-
-		// Guardar todos los clientes, incluido el cliente actualizado
-		Cliente[] arrayClientes = listaClientes.toArray(new Cliente[0]);
-		proveedorAlmacenamiento.saveAll(arrayClientes);
 	}
 
 	/**
+	 * Elimina un cliente del almacén. El cliente se eliminará inmediatamente del
+	 * almacenamiento secundario
 	 * 
-	 * @param nif
-	 * @throws ClientesException
-	 * @throws ProveedorAlmacenamientoClientesException
+	 * @param nif NIF del cliente a eliminar
+	 * @throws ClientesException    Si no hay ningún cliente con el NIF
+	 *                              proporcionado o ocurre un error con el
+	 *                              almacenamiento secundario
+	 * @throws NullPointerException Si el nif es null
 	 */
-	public void removeCliente(String nif) throws ClientesException, ProveedorAlmacenamientoClientesException {
+	public void removeCliente(String nif) throws ClientesException, NullPointerException {
 		if (nif == null) {
 			throw new NullPointerException();
 		}
 
-		boolean clienteEncontrado = false;
-		// Hacemos copia de la lista de clientes, la recorremos
-		// Y si coinciden los nif, y en la posicion de la lista de la copia borramos el
-		// cliente
-		// en la lista de clientes
-		List<Cliente> copiaClientes = new ArrayList<>(listaClientes);
-		for (Cliente cliente : copiaClientes) {
-			if (cliente.getNif().equals(nif)) {
-				clienteEncontrado = true;
-				listaClientes.remove(cliente);
+		try {
+			// Obtenemos el array con los clietnes del fichero
+			Cliente[] arrayCliente = proveedorAlmacenamiento.getAll();
+			// Pasamos el array a lista
+			List<Cliente> listaClientes = new ArrayList<>(Arrays.asList(arrayCliente));
+
+			boolean borrado = false;
+			// Comprobamos si el cliente esta en la lista
+			// Si lo esto lo borramos
+			for (int i = 0; i < listaClientes.size(); i++) {
+				if (listaClientes.get(i).getNif().trim().equalsIgnoreCase(nif)) {
+					borrado = true;
+					// Borramos el cliente en la posicion especifica
+					listaClientes.remove(i);
+					// Pasamos la lista a array
+					arrayCliente = listaClientes.toArray(new Cliente[0]);
+					// Guardamos la nueva lista
+					proveedorAlmacenamiento.saveAll(arrayCliente);
+				}
 			}
+			if (!borrado) {
+				throw new ClientesException();
+			}
+		} catch (ProveedorAlmacenamientoClientesException e) {
 		}
-
-		if (!clienteEncontrado) {
-			throw new ClientesException();
-		}
-
-		// Guardar todos los clientes, incluido el nuevo
-		Cliente[] arrayClientes = listaClientes.toArray(new Cliente[0]);
-		proveedorAlmacenamiento.saveAll(arrayClientes);
 	}
 
-	public Cliente getByNif(String nif) throws ProveedorAlmacenamientoClientesException {
+	/**
+	 * Obtiene un cliente por su nif
+	 * 
+	 * @param nif NIF del cliente
+	 * @return Cliente con el NIF especificado, si se encuentra. null si no se
+	 *         encuentra
+	 */
+	public Cliente getByNif(String nif) {
 		Cliente cliente = null;
-		// Obtener todos los clientes del almacenamiento
-		Cliente[] clientesArray = proveedorAlmacenamiento.getAll();
-		for (Cliente clientes : clientesArray) {
-			if (clientes.getNif().equals(nif)) {
-				cliente = clientes;
+		try {
+
+			// Obtener todos los clientes del almacenamiento
+			Cliente[] clientesArray = proveedorAlmacenamiento.getAll();
+			// Para cada cliente del fichero
+			for (Cliente clienteArchivo : clientesArray) {
+				// Si el nif es igual al que nos han pasado
+				// Creamos el cliente
+				if (clienteArchivo.getNif().equals(nif)) {
+					cliente = clienteArchivo;
+				}
 			}
+		} catch (ProveedorAlmacenamientoClientesException e) {
 		}
 		return cliente;
-
 	}
 
+	/**
+	 * Proporciona un visitador para recorrer los clientes almacenados
+	 * 
+	 * @param visitador Visitador al que se llamará con cada uno de los clientes
+	 *                  almacenados. No puede ser null
+	 * @throws NullPointerException Si el visitador es nulo
+	 */
 	public void visita(VisitadorClientes visitador) {
-		for (Cliente cliente : listaClientes) {
-			visitador.visita(cliente);
+
+		if (visitador == null) {
+			throw new NullPointerException();
+		}
+
+		try {
+			Cliente[] clientesArray = proveedorAlmacenamiento.getAll();
+			for (Cliente cliente : clientesArray) {
+				visitador.visita(cliente);
+			}
+		} catch (ProveedorAlmacenamientoClientesException e) {
 		}
 	}
 }

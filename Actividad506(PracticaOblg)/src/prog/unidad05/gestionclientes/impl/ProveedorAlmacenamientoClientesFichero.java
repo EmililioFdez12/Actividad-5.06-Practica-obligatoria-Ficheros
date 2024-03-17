@@ -40,40 +40,36 @@ public class ProveedorAlmacenamientoClientesFichero implements ProveedorAlmacena
 		this.listaClientes = new ArrayList<>();
 	}
 
-		
-	
+	// Lee el archivo y añade los clientes que haya una lista
 	@Override
 	public Cliente[] getAll() throws ProveedorAlmacenamientoClientesException {
 		String linea = null;
+		listaClientes.clear();
 		try (BufferedReader flujoEntrada = new BufferedReader(new FileReader(rutaFichero))) {
 			while ((linea = flujoEntrada.readLine()) != null) {
 				String[] datosCliente = linea.split("\\|");
-				if (datosCliente.length == 6) { // Verificar que hay suficientes datos en la línea
+				if (datosCliente.length == 6) {
 					Cliente cliente = new Cliente(datosCliente[0], datosCliente[1], datosCliente[2],
 							Integer.parseInt(datosCliente[3]), Double.parseDouble(datosCliente[4]),
 							Boolean.parseBoolean(datosCliente[5]));
 					listaClientes.add(cliente);
-				} else {
-					// Manejar la línea que no cumple con el formato esperado
-					System.out.println("La línea del archivo no cumple con el formato esperado: " + linea);
 				}
 			}
 		} catch (FileNotFoundException e) {
-			
 			System.out.println("El archivo no existe. Se ha creado uno vacío");
 		} catch (IOException e) {
 			System.out.println("Error de entrada/salida.");
 		}
-		return listaClientes.toArray(new Cliente[0]);
+		return listaClientes.toArray(new Cliente[listaClientes.size()]);
 	}
-	
 
 	@Override
 	public void saveAll(Cliente[] clientes) throws ProveedorAlmacenamientoClientesException {
 		try (PrintWriter flujoSalida = new PrintWriter(new FileWriter(rutaFichero, false))) {
 			for (Cliente clienteATexto : clientes) {
-				flujoSalida.printf("%s|%s|%s|%s|%s|%s%n", clienteATexto.getNif(), clienteATexto.getApellidos(), clienteATexto.getNombre(),
-						clienteATexto.getEmpleados(), clienteATexto.getFacturacion(), clienteATexto.isNacionalUe());
+				flujoSalida.printf("%s|%s|%s|%s|%s|%s%n", clienteATexto.getNif(), clienteATexto.getApellidos(),
+						clienteATexto.getNombre(), clienteATexto.getEmpleados(), clienteATexto.getFacturacion(),
+						clienteATexto.isNacionalUe());
 			}
 		} catch (IOException e) {
 			System.out.println("No se ha podido crear el archivo.");

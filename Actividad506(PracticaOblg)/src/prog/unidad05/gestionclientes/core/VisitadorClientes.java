@@ -9,7 +9,7 @@ package prog.unidad05.gestionclientes.core;
 public interface VisitadorClientes {
 
   /**
-   * 
+   * Visita un cliente
    * @param cliente Cliente a visitar
    */
   public void visita(Cliente cliente);
