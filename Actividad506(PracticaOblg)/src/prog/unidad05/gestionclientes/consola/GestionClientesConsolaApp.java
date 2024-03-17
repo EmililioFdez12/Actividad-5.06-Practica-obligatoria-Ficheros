@@ -231,7 +231,7 @@ public class GestionClientesConsolaApp {
 		try {
 			// Eliminamos el cliente
 			clientes.removeCliente(nifAEliminar);
-		} catch (ClientesException | ProveedorAlmacenamientoClientesException e) {
+		} catch (ClientesException e) {
 		}
 	}
 
