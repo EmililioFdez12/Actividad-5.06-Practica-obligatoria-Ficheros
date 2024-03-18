@@ -4,8 +4,6 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.DefaultListModel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -92,41 +90,54 @@ public class GestionClientesSwingApp {
 
 		// Todos los campos de la interfaz, campos de datos, labels y botones
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(8, 40, 550, 200);
 
 		JLabel lblClientes = new JLabel("Clientes");
+		lblClientes.setBounds(10, 11, 70, 25);
 		lblClientes.setFont(new Font("Bebas Neue", Font.PLAIN, 18));
 
 		JLabel lblNif = new JLabel("NIF:");
+		lblNif.setBounds(10, 250, 34, 25);
 		lblNif.setFont(new Font("Bebas Neue", Font.PLAIN, 18));
 
 		txtNIF = new JTextField();
+		txtNIF.setBounds(33, 250, 86, 25);
 		txtNIF.setColumns(10);
 
 		JLabel lblNombre = new JLabel("Nombre");
+		lblNombre.setBounds(130, 252, 70, 25);
 		lblNombre.setFont(new Font("Bebas Neue", Font.PLAIN, 18));
 
 		txtNombre = new JTextField();
+		txtNombre.setBounds(180, 252, 147, 25);
 		txtNombre.setColumns(10);
 
 		JLabel lblEmpleados = new JLabel("Empleados");
+		lblEmpleados.setBounds(347, 250, 70, 25);
 		lblEmpleados.setFont(new Font("Bebas Neue", Font.PLAIN, 18));
 
 		txtEmpleados = new JTextField();
+		txtEmpleados.setBounds(420, 250, 135, 25);
 		txtEmpleados.setColumns(10);
 
 		JLabel lblApellidos = new JLabel("Apellidos");
+		lblApellidos.setBounds(10, 300, 70, 25);
 		lblApellidos.setFont(new Font("Bebas Neue", Font.PLAIN, 18));
 
 		txtApellidos = new JTextField();
+		txtApellidos.setBounds(75, 300, 252, 25);
 		txtApellidos.setColumns(10);
 
 		JLabel lblFacturacion = new JLabel("Facturación");
+		lblFacturacion.setBounds(340, 300, 80, 25);
 		lblFacturacion.setFont(new Font("Bebas Neue", Font.PLAIN, 18));
 
 		txtFacturacion = new JTextField();
+		txtFacturacion.setBounds(420, 300, 135, 25);
 		txtFacturacion.setColumns(10);
 
 		checkBoxUE = new JCheckBox("¿Es nacional de la UE?");
+		checkBoxUE.setBounds(10, 340, 200, 25);
 		checkBoxUE.setFont(new Font("Bebas Neue", Font.PLAIN, 18));
 
 		/**
@@ -134,6 +145,7 @@ public class GestionClientesSwingApp {
 		 */
 		// Botón para añadir un nuevo cliente
 		btnNuevo = new JButton("Nuevo");
+		btnNuevo.setBounds(10, 380, 125, 40);
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				anyadirCliente();
@@ -145,6 +157,7 @@ public class GestionClientesSwingApp {
 		 * Boton Eliminar cliente
 		 */
 		btnEliminar = new JButton("Eliminar");
+		btnEliminar.setBounds(220, 380, 125, 40);
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Eliminamos cliente
@@ -164,6 +177,7 @@ public class GestionClientesSwingApp {
 		 * Boton Actualizar cliente
 		 */
 		btnActualizar = new JButton("Actualizar");
+		btnActualizar.setBounds(430, 380, 125, 40);
 		btnActualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Actualizamos el cliente
@@ -176,12 +190,14 @@ public class GestionClientesSwingApp {
 		 * Boton aceptar
 		 */
 		btnAceptar = new JButton("Aceptar");
+		btnAceptar.setBounds(10, 440, 125, 40);
 		btnAceptar.setFont(new Font("Bebas Neue", Font.PLAIN, 20));
 
 		/**
 		 * Boton cancelar
 		 */
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setBounds(220, 440, 125, 40);
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Restauramos el estado original de la interfaz si se le da a cancelar
@@ -194,6 +210,7 @@ public class GestionClientesSwingApp {
 		 * Boton para salir del programa
 		 */
 		btnSalir = new JButton("Salir");
+		btnSalir.setBounds(430, 440, 125, 40);
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Sacamos dialogo para preguntar si se esta seguro
@@ -279,83 +296,26 @@ public class GestionClientesSwingApp {
 		txtFacturacion.setEditable(false);
 		txtEmpleados.setEditable(false);
 		checkBoxUE.setEnabled(false);
-
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout
-				.setHorizontalGroup(
-						groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(lblClientes,
-										GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup().addGap(8).addComponent(scrollPane,
-										GroupLayout.PREFERRED_SIZE, 550, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup().addGap(10)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(groupLayout.createSequentialGroup().addGap(24).addComponent(txtNIF,
-														GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-												.addComponent(lblNif, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE))
-										.addGap(4)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(groupLayout.createSequentialGroup().addGap(56).addComponent(txtNombre,
-														GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))
-												.addComponent(lblNombre, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
-										.addGap(20).addComponent(lblEmpleados, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-										.addGap(16).addComponent(txtEmpleados, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup().addGap(10)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(groupLayout.createSequentialGroup().addGap(65).addComponent(txtApellidos,
-														GroupLayout.PREFERRED_SIZE, 252, GroupLayout.PREFERRED_SIZE))
-												.addComponent(lblApellidos, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
-										.addGap(18).addComponent(lblFacturacion, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-										.addGap(10)
-										.addComponent(txtFacturacion, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(checkBoxUE,
-										GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup().addGap(10)
-										.addComponent(btnNuevo, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE).addGap(85)
-										.addComponent(btnEliminar, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE).addGap(85)
-										.addComponent(btnActualizar, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup().addGap(10)
-										.addComponent(btnAceptar, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE).addGap(85)
-										.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE).addGap(85)
-										.addComponent(btnSalir, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)));
-		groupLayout
-				.setVerticalGroup(
-						groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup().addGap(11)
-										.addComponent(lblClientes, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE).addGap(4)
-										.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE).addGap(10)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(txtNIF, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-												.addComponent(lblNif, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-												.addGroup(groupLayout.createSequentialGroup().addGap(1).addComponent(txtNombre,
-														GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-												.addComponent(lblNombre, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-												.addComponent(lblEmpleados, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-												.addComponent(txtEmpleados, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-										.addGap(23)
-										.addGroup(
-												groupLayout.createParallelGroup(Alignment.LEADING)
-														.addGroup(groupLayout.createSequentialGroup().addGap(1)
-																.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-																		.addComponent(txtApellidos, GroupLayout.PREFERRED_SIZE, 25,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addComponent(lblApellidos, GroupLayout.PREFERRED_SIZE, 25,
-																				GroupLayout.PREFERRED_SIZE)))
-														.addComponent(lblFacturacion, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-														.addGroup(groupLayout.createSequentialGroup().addGap(1).addComponent(txtFacturacion,
-																GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)))
-										.addGap(15).addComponent(checkBoxUE, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-										.addGap(15)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(btnNuevo, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-												.addComponent(btnEliminar, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-												.addComponent(btnActualizar, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
-										.addGap(20)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(btnAceptar, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-												.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-												.addComponent(btnSalir, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))));
-		frame.getContentPane().setLayout(groupLayout);
+		frame.getContentPane().setLayout(null);
+		frame.getContentPane().add(lblClientes);
+		frame.getContentPane().add(scrollPane);
+		frame.getContentPane().add(txtNIF);
+		frame.getContentPane().add(lblNif);
+		frame.getContentPane().add(txtNombre);
+		frame.getContentPane().add(lblNombre);
+		frame.getContentPane().add(lblEmpleados);
+		frame.getContentPane().add(txtEmpleados);
+		frame.getContentPane().add(txtApellidos);
+		frame.getContentPane().add(lblApellidos);
+		frame.getContentPane().add(lblFacturacion);
+		frame.getContentPane().add(txtFacturacion);
+		frame.getContentPane().add(checkBoxUE);
+		frame.getContentPane().add(btnNuevo);
+		frame.getContentPane().add(btnEliminar);
+		frame.getContentPane().add(btnActualizar);
+		frame.getContentPane().add(btnAceptar);
+		frame.getContentPane().add(btnCancelar);
+		frame.getContentPane().add(btnSalir);
 
 		lstClientes.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
